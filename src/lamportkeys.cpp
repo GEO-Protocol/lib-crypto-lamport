@@ -4,12 +4,14 @@
 namespace crypto {
 namespace lamport {
 
-const size_t BaseKey::keySize()
+const size_t AbstractKey::kKeySize()
 {
-    // public and private keys has 16KB
-    return 16 * 1024;
+    return kRandomNumbersCount * 32;
 }
 
+/*
+ * ---------------------------------------------------------------------------------------------------------------------
+ */
 
 PrivateKey::PrivateKey():
     mData(memory::SecureSegment(kRandomNumbersCount * kRandomNumberSize)),
@@ -26,7 +28,7 @@ PrivateKey::PrivateKey():
 
 PrivateKey::PrivateKey(
     byte *data) :
-    mData(memory::SecureSegment(keySize())),
+    mData(memory::SecureSegment(kKeySize())),
     mIsCropped(false)
 {
     auto guard = mData.unlockAndInitGuard();
@@ -34,9 +36,17 @@ PrivateKey::PrivateKey(
     memcpy(
         offset,
         data,
-        keySize());
+        kKeySize());
 }
 
+const memory::SecureSegment* PrivateKey::data() const
+{
+    return &mData;
+}
+
+/*
+ * ---------------------------------------------------------------------------------------------------------------------
+ */
 
 PublicKey::Shared PrivateKey::derivePublicKey() {
 
@@ -62,25 +72,21 @@ PublicKey::Shared PrivateKey::derivePublicKey() {
     return generatedKey;
 }
 
-const memory::SecureSegment* PrivateKey::data() const
-{
-    return &mData;
-}
-
 PublicKey::PublicKey(
     byte *data)
 {
     mData = static_cast<byte*>(
         malloc(
-            keySize()));
+            kKeySize()));
+
     memcpy(
         mData,
         data,
-        keySize());
+        kKeySize());
 }
 
 PublicKey::~PublicKey()
-    noexcept
+noexcept
 {
     if (mData != nullptr) {
         free(mData);
@@ -93,13 +99,11 @@ const byte* PublicKey::data() const
     return mData;
 }
 
-const KeyHash::Shared PublicKey::hash() const
-{
-    // todo build correct hash
-    return make_shared<KeyHash>(mData);
-}
+/*
+ * ---------------------------------------------------------------------------------------------------------------------
+ */
 
-KeyHash::KeyHash(
+BLAKE2KeyHash::BLAKE2KeyHash(
     byte* buffer)
 {
     memcpy(
@@ -108,28 +112,58 @@ KeyHash::KeyHash(
         kBytesSize);
 }
 
-const byte* KeyHash::data() const
+const byte* BLAKE2KeyHash::data() const
 {
     return mData;
 }
 
 
-bool operator== (const KeyHash &kh1, const KeyHash &kh2)
+BLAKE2KeyHash::BLAKE2KeyHash(
+    PublicKey::Shared key)
 {
-    for (int i = KeyHash::kBytesSize - 1; i >= 0; --i){
-        if (kh1.mData[i] != kh2.mData[i])
-            return false;
-    }
-    return true;
+    crypto_generichash(
+        mData,
+        BLAKE2KeyHash::kBytesSize,
+        key->data(),
+        key->kKeySize(),
+        nullptr,
+        0);
 }
 
-bool operator!= (const KeyHash &kh1, const KeyHash &kh2)
+BLAKE2KeyHash::BLAKE2KeyHash(
+    const PrivateKey &key)
 {
-    for (int i = KeyHash::kBytesSize - 1; i >= 0; --i){
-        if (kh1.mData[i] != kh2.mData[i])
-            return true;
-    }
-    return false;
+    auto guard = key.data()->unlockAndInitGuard();
+    crypto_generichash(
+        mData,
+        BLAKE2KeyHash::kBytesSize,
+        guard.address(),
+        key.kKeySize(),
+        nullptr,
+        0);
+}
+
+BLAKE2KeyHash::BLAKE2KeyHash(
+    PrivateKey::Shared key)
+{
+    auto guard = key->data()->unlockAndInitGuard();
+    crypto_generichash(
+        mData,
+        BLAKE2KeyHash::kBytesSize,
+        guard.address(),
+        key->kKeySize(),
+        nullptr,
+        0);
+}
+
+bool operator== (const BLAKE2KeyHash &kh1, const BLAKE2KeyHash &kh2)
+{
+    return memcmp(kh1.mData, kh2.mData, BLAKE2KeyHash::kBytesSize) == 0;
+}
+
+bool operator!= (const BLAKE2KeyHash &kh1, const BLAKE2KeyHash &kh2)
+{
+    return ! (kh1 == kh2);
 }
 
 

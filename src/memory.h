@@ -4,7 +4,7 @@
 #include <sodium.h>
 #include <sodium/core.h>
 
-#include "../common/Types.h"
+#include "types.h"
 
 
 namespace crypto {
@@ -28,7 +28,7 @@ public:
      * @brief
      * Unlocks memory segment for read/write operations.
      */
-    SecureSegmentGuard(
+    explicit SecureSegmentGuard(
         SecureSegment &segment)
         noexcept;
 
@@ -85,7 +85,7 @@ public:
      *
      * @throws "MemoryError" on allocation error.
      */
-    SecureSegment(
+    explicit SecureSegment(
         size_t bytesCount);
 
     /**

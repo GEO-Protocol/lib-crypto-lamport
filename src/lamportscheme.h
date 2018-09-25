@@ -5,7 +5,6 @@
 
 #include <bitset>
 #include <cstring>
-#include <memory>
 
 
 namespace crypto {
@@ -13,7 +12,11 @@ namespace lamport {
 
 using namespace std;
 
-
+/**
+ * Todo: add description
+ *
+ * Tests: Signature
+ */
 class Signature {
 public:
     typedef shared_ptr<Signature> Shared;
@@ -24,7 +27,7 @@ public:
         size_t dataSize,
         PrivateKey *pKey);
 
-    Signature(
+    explicit Signature(
         byte *data);
 
     ~Signature();
