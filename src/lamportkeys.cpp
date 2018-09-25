@@ -113,35 +113,25 @@ const byte* KeyHash::data() const
     return mData;
 }
 
+
 bool operator== (const KeyHash &kh1, const KeyHash &kh2)
 {
-#ifdef BOOST_BIG_ENDIAN
-    //todo
-#endif
-
-#ifdef BOOST_LITTLE_ENDIAN
     for (int i = KeyHash::kBytesSize - 1; i >= 0; --i){
         if (kh1.mData[i] != kh2.mData[i])
             return false;
     }
     return true;
-#endif
 }
 
 bool operator!= (const KeyHash &kh1, const KeyHash &kh2)
 {
-#ifdef BOOST_BIG_ENDIAN
-        //todo
-#endif
-
-#ifdef BOOST_LITTLE_ENDIAN
     for (int i = KeyHash::kBytesSize - 1; i >= 0; --i){
         if (kh1.mData[i] != kh2.mData[i])
             return true;
     }
     return false;
-#endif
 }
+
 
 }
 }
