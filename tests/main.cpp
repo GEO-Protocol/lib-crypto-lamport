@@ -1,7 +1,7 @@
 #define CATCH_CONFIG_MAIN
 
 #include "catch2.hpp"
-#include "../src/lamportkeys.h"
+#include "../src/lamportscheme.h"
 
 #include <sodium.h>
 #include <cstring>
@@ -114,5 +114,24 @@ TEST_CASE("Public keys hashes are computed", "[BLAKE2KeyHash]" ) {
         BLAKE2KeyHash h2(pubKey);
 
         REQUIRE(!(h1 != h2));
+    }
+}
+
+TEST_CASE("Signatures generation", "[Signature]") {
+    sodium_init();
+
+    byte referenceData[] = "123456781234567812345678123456781234567812345678";
+
+    PrivateKey pKey;
+    auto pubKey = pKey.derivePublicKey();
+    Signature sig(referenceData, sizeof referenceData, &pKey);
+
+    SECTION("Signatures should pass check on reference data") {
+        REQUIRE(sig.check(referenceData, sizeof referenceData, pubKey));
+    }
+
+    SECTION("Signatures should NOT pass check on some other data") {
+        byte otherData[] = "1234";
+        REQUIRE_FALSE(sig.check(otherData, sizeof otherData, pubKey));
     }
 }

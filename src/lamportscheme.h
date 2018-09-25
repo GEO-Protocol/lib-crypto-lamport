@@ -12,7 +12,11 @@ namespace lamport {
 
 using namespace std;
 
-
+/**
+ * Todo: add description
+ *
+ * Tests: Signature
+ */
 class Signature {
 public:
     typedef shared_ptr<Signature> Shared;

@@ -39,6 +39,11 @@ PrivateKey::PrivateKey(
         kKeySize());
 }
 
+const memory::SecureSegment* PrivateKey::data() const
+{
+    return &mData;
+}
+
 /*
  * ---------------------------------------------------------------------------------------------------------------------
  */
@@ -67,11 +72,6 @@ PublicKey::Shared PrivateKey::derivePublicKey() {
     return generatedKey;
 }
 
-const memory::SecureSegment* PrivateKey::data() const
-{
-    return &mData;
-}
-
 PublicKey::PublicKey(
     byte *data)
 {
@@ -98,6 +98,10 @@ const byte* PublicKey::data() const
 {
     return mData;
 }
+
+/*
+ * ---------------------------------------------------------------------------------------------------------------------
+ */
 
 BLAKE2KeyHash::BLAKE2KeyHash(
     byte* buffer)
