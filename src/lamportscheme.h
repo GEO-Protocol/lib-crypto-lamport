@@ -5,7 +5,6 @@
 
 #include <bitset>
 #include <cstring>
-#include <memory>
 
 
 namespace crypto {
@@ -24,7 +23,7 @@ public:
         size_t dataSize,
         PrivateKey *pKey);
 
-    Signature(
+    explicit Signature(
         byte *data);
 
     ~Signature();

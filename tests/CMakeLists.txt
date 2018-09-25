@@ -28,6 +28,7 @@ set(Boost_USE_MULTITHREADED ON)
 
 
 set(SOURCE_FILES
+        catch2.hpp
         main.cpp
 
         ../src/memory.h
@@ -36,8 +37,7 @@ set(SOURCE_FILES
         ../src/lamportscheme.cpp
         ../src/lamportkeys.h
         ../src/lamportkeys.cpp
-        ../src/keychain.h
-        ../src/keychain.cpp)
+        )
 
 add_executable(crypto-lamport-test ${SOURCE_FILES})
 
