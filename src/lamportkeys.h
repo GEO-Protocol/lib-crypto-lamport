@@ -15,6 +15,11 @@ namespace lamport {
 
 using namespace std;
 
+/*
+ * Base class for private and public keys.
+ *
+ * Tests: [abstract key]
+ */
 class AbstractKey:
 
     // Keys must not be copyable to prevent occasional key leak into memory.
@@ -34,7 +39,9 @@ protected:
     static const size_t kRandomNumberSize = 256 / 8;
 };
 
-
+/**
+ * todo: implement tests
+ */
 class PublicKey:
     public AbstractKey {
     friend class PrivateKey;
@@ -43,22 +50,31 @@ class PublicKey:
 public:
     typedef shared_ptr<PublicKey> Shared;
 
+public:
+    using AbstractKey::AbstractKey;
+
+    /**
+     * Creates public key and initialises it with bytes from `data`.
+     * @param data must be at least 16Kb long.
+     */
     explicit PublicKey(
         byte* data);
 
     ~PublicKey()
         noexcept;
 
+    /**
+     * @returns bytes of the key.
+     */
     const byte* data() const;
-
-public:
-    using AbstractKey::AbstractKey;
 
 private:
     byte *mData;
 };
 
-
+/**
+ * todo: implement tests
+ */
 class PrivateKey:
     public AbstractKey {
     friend class Signature;
@@ -67,15 +83,26 @@ public:
     typedef shared_ptr<PrivateKey> Shared;
 
 public:
+    /*
+     * Creates private key and initialises it with cryptographic random data.
+     */
     explicit PrivateKey();
 
+    /**
+     * Creates private key and initialises it with bytes from `data`.
+     * @param data must be at least 16Kb long.
+     */
     explicit PrivateKey(
         byte* data);
 
+    /**
+     * @returns public key, generated from current private key.
+     */
     PublicKey::Shared derivePublicKey();
 
-    void crop();
-
+    /**
+     * @returns secure segment with access to key's data.
+     */
     const memory::SecureSegment* data() const;
 
 private:
@@ -91,7 +118,7 @@ private:
  * Implements hashing via BLAKE2 hash.
  * (https://download.libsodium.org/doc/hashing/generic_hashing)
  *
- * Tests - [key hash]
+ * Tests: BLAKE2KeyHash
  */
 class BLAKE2KeyHash {
 public:

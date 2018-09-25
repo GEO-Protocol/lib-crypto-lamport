@@ -7,9 +7,28 @@
 #include <cstring>
 
 
-TEST_CASE("Private keys hashes are computed", "[key hash]" ) {
-    using namespace crypto::lamport;
+using namespace crypto::lamport;
 
+TEST_CASE("Abstract keys", "[AbstractKey]") {
+    REQUIRE(PrivateKey::kKeySize() == 1024 * 16);
+    REQUIRE(PublicKey::kKeySize() == 1024 * 16);
+
+    class AbstractKeyTest: public AbstractKey {
+    public:
+        static const size_t kRandomNumbersCountTest(){
+            return AbstractKeyTest::kRandomNumbersCount;
+        }
+
+        static const size_t kRandomNumberSizeTest(){
+            return AbstractKeyTest::kRandomNumberSize;
+        }
+    };
+
+    REQUIRE(AbstractKeyTest::kRandomNumbersCountTest() == 512);
+    REQUIRE(AbstractKeyTest::kRandomNumberSizeTest() == 32);
+}
+
+TEST_CASE("Private keys hashes are computed", "[BLAKE2KeyHash]" ) {
     sodium_init();
 
     PrivateKey pKey;
@@ -62,9 +81,7 @@ TEST_CASE("Private keys hashes are computed", "[key hash]" ) {
     }
 }
 
-TEST_CASE("Public keys hashes are computed", "[key hash]" ) {
-    using namespace crypto::lamport;
-
+TEST_CASE("Public keys hashes are computed", "[BLAKE2KeyHash]" ) {
     sodium_init();
 
     PrivateKey pKey;

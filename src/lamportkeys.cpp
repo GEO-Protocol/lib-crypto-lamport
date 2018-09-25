@@ -9,6 +9,9 @@ const size_t AbstractKey::kKeySize()
     return kRandomNumbersCount * 32;
 }
 
+/*
+ * ---------------------------------------------------------------------------------------------------------------------
+ */
 
 PrivateKey::PrivateKey():
     mData(memory::SecureSegment(kRandomNumbersCount * kRandomNumberSize)),
@@ -36,6 +39,9 @@ PrivateKey::PrivateKey(
         kKeySize());
 }
 
+/*
+ * ---------------------------------------------------------------------------------------------------------------------
+ */
 
 PublicKey::Shared PrivateKey::derivePublicKey() {
 
