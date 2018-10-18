@@ -29,5 +29,5 @@ Used in [GEO Network client](https://github.com/GEO-Protocol/GEO-network-client)
 
 </br>
 
-## Tests
-Basic operations tests are provided [here](https://github.com/GEO-Protocol/lib-crypto-lamport/tree/master/tests). 
+## Tests and Examples
+Basic operations tests and examples are provided [here](https://github.com/GEO-Protocol/lib-crypto-lamport/tree/master/tests). 
