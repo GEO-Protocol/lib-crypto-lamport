@@ -24,7 +24,8 @@ Used in [GEO Network client](https://github.com/GEO-Protocol/GEO-network-client)
 
 ## Dependancies
 * [libsoidum](https://download.libsodium.org/doc/);
-* [catch2](https://github.com/catchorg/Catch2) (for the tests purposes).
+* [catch2](https://github.com/catchorg/Catch2) (for the tests purposes);
+* [cmake].
 
 </br>
 
