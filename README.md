@@ -12,8 +12,7 @@ Used in [GEO Network client](https://github.com/GEO-Protocol/GEO-network-client)
 ## How to use it
 
 ---
-**WARN:** This is the soure-based library!  
-It was not adapted/tested for binary library builds.
+**Note:** This is the soure-based library!
 
 ---
 
